@@ -49,7 +49,7 @@
 
 **Techniques Applied:**
 
-**Oversampling (SMOTE):**
+**Oversampling:**
 
 * Increased the number of samples in the minority (bankrupt) class to match the majority class.
 
