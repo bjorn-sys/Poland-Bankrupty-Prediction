@@ -1,4 +1,4 @@
-# 🇵🇱 Poland Bankruptcy Prediction
+# 📢 Poland Bankruptcy Prediction
 
 * This project focuses on predicting which companies in Poland are at risk of bankruptcy using machine learning classification models. It leverages data balancing techniques and model tuning to build a robust predictive pipeline capable of handling highly imbalanced datasets.
 
