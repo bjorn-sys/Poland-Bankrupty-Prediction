@@ -139,5 +139,7 @@
 
 Thanks for checking out this project! Feedback and collaboration are welcome.
 
+Link: https://poland-bankrupty-predictionw.streamlit.app/
+
 
 
