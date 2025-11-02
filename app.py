@@ -89,10 +89,6 @@ feature_descriptions = {
 # 🧮 BANKRUPTCY RISK CALCULATION
 # --------------------------------------------------------------
 def calculate_bankruptcy_risk(features: dict) -> float:
-    """
-    Rule-based scoring system to estimate bankruptcy probability.
-    Each financial ratio contributes to a cumulative risk score.
-    """
     risk_score = 0
 
     # Profitability (A1)
@@ -133,7 +129,6 @@ def calculate_bankruptcy_risk(features: dict) -> float:
     elif features['A7'] < 0.03:
         risk_score += 10
 
-    # Convert score → probability
     probability = min(risk_score / 100, 0.95)
     return max(probability, 0.05)
 
@@ -149,26 +144,12 @@ with tab1:
     st.header("Financial Bankruptcy Prediction System")
 
     col1, col2 = st.columns([2, 1])
-
     with col1:
         st.write("""
         ### 📈 About This System
-
         This dashboard estimates **company bankruptcy risk** through
         **financial ratio analysis** and a **rule-based scoring model**.
-
-        **Key Features:**
-        - 🎯 Real-time Risk Assessment  
-        - 📊 Ratio-based Financial Evaluation  
-        - 💡 Risk Factor Breakdown  
-        - 📈 Interactive Visual Analytics  
-
-        **Methodology:**
-        - Evaluation of 10 financial ratios  
-        - Weighted risk score → bankruptcy probability  
-        - Live business health insights  
         """)
-
     with col2:
         st.metric("System Accuracy", "~85%")
         st.metric("Risk Coverage", "10 Key Ratios")
@@ -181,48 +162,44 @@ with tab2:
     st.header("🎯 Bankruptcy Risk Prediction")
 
     st.subheader("Enter Financial Ratios Below")
-
     col1, col2 = st.columns(2)
     input_data = {}
 
-    # Left column: Profitability + Liquidity
     with col1:
         st.write("**💰 Profitability Ratios**")
         input_data['A1'] = st.slider('A1 - Net Profit/Total Assets', -1.0, 1.0, 0.05, 0.01)
         input_data['A7'] = st.slider('A7 - EBIT/Total Assets', -1.0, 1.0, 0.06, 0.01)
-
         st.write("**🏦 Liquidity Ratios**")
         input_data['A4'] = st.slider('A4 - Current Assets/Short-term Liabilities', 0.0, 10.0, 1.57, 0.1)
 
-    # Right column: Leverage + Efficiency
     with col2:
         st.write("**📊 Leverage Ratios**")
         input_data['A2'] = st.slider('A2 - Total Liabilities/Total Assets', 0.0, 2.0, 0.47, 0.01)
         input_data['A8'] = st.slider('A8 - Book Value of Equity/Total Liabilities', 0.0, 5.0, 1.07, 0.1)
-
         st.write("**⚖️ Efficiency Ratios**")
         input_data['A3'] = st.slider('A3 - Working Capital/Total Assets', -1.0, 1.0, 0.20, 0.01)
         input_data['A9'] = st.slider('A9 - Sales/Total Assets', 0.0, 5.0, 1.20, 0.1)
 
-    # Prediction button
     if st.button("🔍 Analyze Bankruptcy Risk", type="primary", use_container_width=True):
         probability = calculate_bankruptcy_risk(input_data)
 
-        # Classify risk
+        # Risk level classification
         if probability < 0.3:
             risk_level = "LOW RISK"
             css_class = "prediction-low-risk"
+            action = "✅ Invest — Strong financial health, minimal risk of bankruptcy."
         elif probability < 0.7:
             risk_level = "MEDIUM RISK"
             css_class = "prediction-medium-risk"
+            action = "⚠️ Caution — Review financials closely and consider partial investment."
         else:
             risk_level = "HIGH RISK"
             css_class = "prediction-high-risk"
+            action = "🚨 Do NOT Invest — Very high risk of bankruptcy detected."
 
-        # Display
+        # Risk display
         st.markdown(f'<div class="{css_class}">🏦 {risk_level}</div>', unsafe_allow_html=True)
 
-        # Key metrics
         c1, c2, c3 = st.columns(3)
         with c1: st.metric("Risk Probability", f"{probability:.1%}")
         with c2: st.metric("Risk Level", risk_level.split()[0])
@@ -230,7 +207,28 @@ with tab2:
             confidence = (1 - abs(probability - 0.5) * 2)
             st.metric("Confidence", f"{confidence:.1%}")
 
-        # Risk factor insights
+        # --------------------------------------------------------------
+        # 🎯 Precision and Recall Float Bar (NEW)
+        # --------------------------------------------------------------
+        st.subheader("📏 Model Precision and Recall")
+        precision = st.slider("Precision", 0.0, 1.0, 0.85)
+        recall = st.slider("Recall", 0.0, 1.0, 0.80)
+
+        fig, ax = plt.subplots(figsize=(6, 1.5))
+        ax.barh(["Precision"], [precision], color="skyblue")
+        ax.barh(["Recall"], [recall], color="lightgreen")
+        ax.set_xlim(0, 1)
+        ax.set_xlabel("Score")
+        ax.set_title("Precision & Recall Metrics")
+        st.pyplot(fig)
+
+        # --------------------------------------------------------------
+        # 🧭 Recommended Action (NEW)
+        # --------------------------------------------------------------
+        st.subheader("💡 Recommended Action")
+        st.info(action)
+
+        # Risk factors
         st.subheader("🔍 Risk Factor Breakdown")
         risk_factors = []
         if input_data['A1'] < 0: risk_factors.append("❌ Negative Net Profit (A1)")
@@ -250,7 +248,6 @@ with tab2:
 # --------------------------------------------------------------
 with tab3:
     st.header("📈 Financial Health Analysis")
-
     categories = ['Profitability', 'Liquidity', 'Leverage', 'Efficiency', 'Growth']
     sample_scores = [0.7, 0.8, 0.6, 0.75, 0.65]
 
@@ -264,8 +261,6 @@ with tab3:
     ax.set_xlabel('Health Score (0–1)')
     ax.set_title('Company Financial Health Overview')
     ax.set_xlim(0, 1)
-
-    # Add text labels
     for i, v in enumerate(sample_scores):
         ax.text(v + 0.02, i, f'{v:.0%}', va='center', fontweight='bold')
 
