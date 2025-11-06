@@ -139,7 +139,7 @@
 
 Thanks for checking out this project! Feedback and collaboration are welcome.
 
-Link: https://poland-bankrupty-predictionw.streamlit.app/
+Cloud Link: http://44.204.206.89:8501/
 
 
 
